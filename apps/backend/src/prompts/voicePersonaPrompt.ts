@@ -24,5 +24,9 @@ const PERSONA_BLOCKS: Record<VoicePersonaId, string> = {
 };
 
 export function getVoicePersonaPromptBlock(persona: VoicePersonaId): string {
-  return PERSONA_BLOCKS[persona];
+  const block = PERSONA_BLOCKS[persona];
+  if (block === undefined) {
+    throw new Error(`Unknown voice persona: ${String(persona)}`);
+  }
+  return block;
 }

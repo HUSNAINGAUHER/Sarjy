@@ -1,5 +1,5 @@
 import type { Server as HttpServer } from "http";
-import { Server as SocketIOServer } from "socket.io";
+import { Server as SocketIOServer, type Socket } from "socket.io";
 import type {
   ClientToServerEvents,
   InterServerEvents,
@@ -17,6 +17,13 @@ export type AppIOServer = SocketIOServer<
   SocketData
 >;
 
+type AppSocket = Socket<
+  ClientToServerEvents,
+  ServerToClientEvents,
+  InterServerEvents,
+  SocketData
+>;
+
 export function createSocketServer(httpServer: HttpServer): AppIOServer {
   const io: AppIOServer = new SocketIOServer(httpServer, {
     cors: {
@@ -25,7 +32,7 @@ export function createSocketServer(httpServer: HttpServer): AppIOServer {
     },
   });
 
-  io.on("connection", (socket) => {
+  io.on("connection", (socket: AppSocket) => {
     logger.info("socket connected", { id: socket.id });
 
     registerVoiceHandlers(socket);
