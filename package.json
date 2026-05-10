@@ -23,7 +23,8 @@
     "start:backend": "yarn workspace @sarjy/backend start",
     "typecheck": "yarn workspaces run typecheck",
     "lint": "yarn workspaces run lint",
-    "clean": "yarn workspaces run clean && rimraf node_modules"
+    "clean": "yarn workspaces run clean && rimraf node_modules",
+    "heroku-postbuild": "yarn build:shared && yarn workspace @sarjy/backend build"
   },
   "devDependencies": {
     "rimraf": "^5.0.5",
