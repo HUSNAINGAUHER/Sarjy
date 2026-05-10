@@ -1,0 +1,77 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum MessageRole {
+  user
+  assistant
+  system
+}
+
+enum MemoryCategory {
+  identity
+  preference
+  personality
+  constraint
+  ongoing
+}
+
+model User {
+  id          String       @id @default(cuid())
+  name        String
+  fullName    String
+  createdAt   DateTime     @default(now())
+  sessions    Session[]
+  memoryFacts MemoryFact[]
+}
+
+model Session {
+  id            String    @id @default(cuid())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title         String    @default("")
+  summary       String    @default("") @db.Text
+  messageCount  Int       @default(0)
+  /// Serialised WorkflowState — managed by WorkflowStateManager.
+  workflowState Json?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  messages      Message[]
+
+  @@index([userId, updatedAt(sort: Desc)])
+}
+
+model Message {
+  id        String      @id @default(cuid())
+  sessionId String
+  session   Session     @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  role      MessageRole
+  content   String      @db.Text
+  seqNum    Int
+  archived  Boolean     @default(false)
+  createdAt DateTime    @default(now())
+
+  @@unique([sessionId, seqNum])
+  @@index([sessionId, archived, seqNum])
+}
+
+model MemoryFact {
+  id              String         @id @default(cuid())
+  userId          String
+  user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category        MemoryCategory
+  key             String
+  value           String         @db.Text
+  confidence      Float          @default(0.85)
+  sourceSessionId String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@unique([userId, key])
+  @@index([userId, updatedAt(sort: Desc)])
+}

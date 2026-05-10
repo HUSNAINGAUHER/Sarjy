@@ -1,0 +1,6 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "installCommand": "cd ../.. && corepack enable && yarn install --frozen-lockfile",
+  "buildCommand": "cd ../.. && yarn build:shared && yarn workspace @sarjy/frontend build",
+  "framework": "nextjs"
+}

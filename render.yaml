@@ -1,0 +1,40 @@
+# Render Blueprint: https://render.com/docs/infrastructure-as-code
+# After first deploy, set CORS_ORIGIN to your Vercel URL (e.g. https://sarjy.vercel.app).
+databases:
+  - name: sarjy-postgres
+    plan: free
+    databaseName: sarjy
+
+services:
+  - type: web
+    name: sarjy-backend
+    runtime: node
+    region: oregon
+    plan: free
+    buildCommand: yarn install --frozen-lockfile && yarn build:shared && yarn workspace @sarjy/backend build
+    preDeployCommand: yarn workspace @sarjy/backend db:migrate
+    startCommand: yarn workspace @sarjy/backend start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: 22.12.0
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: sarjy-postgres
+          property: connectionString
+      - key: CORS_ORIGIN
+        sync: false
+      - key: DEEPGRAM_API_KEY
+        sync: false
+      - key: GOOGLE_GENERATIVE_AI_API_KEY
+        sync: false
+      - key: DEEPGRAM_STT_MODEL
+        value: flux-general-en
+      - key: VOICE_TTS_PROVIDER
+        value: deepgram
+      - key: VOICE_LLM_PROVIDER
+        value: google
+      - key: VOICE_LLM_MODEL
+        value: gemini-2.0-flash

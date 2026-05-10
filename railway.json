@@ -1,0 +1,19 @@
+{
+  "$schema": "https://railway.com/railway.schema.json",
+  "build": {
+    "buildCommand": "yarn install --frozen-lockfile && yarn build:shared && yarn workspace @sarjy/backend build",
+    "watchPatterns": [
+      "apps/backend/**",
+      "packages/shared-types/**",
+      "package.json",
+      "yarn.lock",
+      "railway.json"
+    ]
+  },
+  "deploy": {
+    "startCommand": "yarn workspace @sarjy/backend start",
+    "preDeployCommand": "yarn workspace @sarjy/backend db:migrate",
+    "healthcheckPath": "/health",
+    "healthcheckTimeout": 120
+  }
+}

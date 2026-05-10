@@ -1,0 +1,33 @@
+{
+  "name": "sarjy",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Voice-enabled web assistant - monorepo (Next.js frontend + Node/Express backend + shared types)",
+  "engines": {
+    "node": ">=22.0.0",
+    "yarn": ">=1.22.0"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "yarn workspaces run dev",
+    "dev:frontend": "yarn workspace @sarjy/frontend dev",
+    "dev:backend": "yarn workspace @sarjy/backend dev",
+    "build": "yarn workspace @sarjy/shared-types build && yarn workspace @sarjy/backend build && yarn workspace @sarjy/frontend build",
+    "build:shared": "yarn workspace @sarjy/shared-types build",
+    "build:frontend": "yarn workspace @sarjy/frontend build",
+    "build:backend": "yarn workspace @sarjy/backend build",
+    "start:frontend": "yarn workspace @sarjy/frontend start",
+    "start:backend": "yarn workspace @sarjy/backend start",
+    "typecheck": "yarn workspaces run typecheck",
+    "lint": "yarn workspaces run lint",
+    "clean": "yarn workspaces run clean && rimraf node_modules"
+  },
+  "devDependencies": {
+    "rimraf": "^5.0.5",
+    "typescript": "^5.4.5"
+  },
+  "packageManager": "yarn@1.22.22"
+}

@@ -1,0 +1,25 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: sarjy
+      POSTGRES_PASSWORD: sarjy
+      POSTGRES_DB: sarjy
+    # Host 5433 avoids clashing with a local Postgres on 5432
+    ports:
+      - "5433:5432"
+    volumes:
+      - sarjy_pg_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - sarjy_redis_data:/data
+
+volumes:
+  sarjy_pg_data:
+  sarjy_redis_data:
